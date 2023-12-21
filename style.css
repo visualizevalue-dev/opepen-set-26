@@ -1,0 +1,5 @@
+#opepen {
+  & > span {
+    padding: 1rem;
+  }
+}
