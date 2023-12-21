@@ -1,6 +1,7 @@
 :root {
-  --gray-dark: #272727;
-  --text: #EDEDED;
+  --bg-dark:  #272727;
+  --bg-light: #424242;
+  --text:     #EDEDED;
 }
 
 
@@ -25,8 +26,12 @@
   }
 
   & > span {
-    background-color: var(--gray-dark);
+    background-color: var(--bg-dark);
     padding: 1rem;
     color: var(--text);
+
+    &.light {
+      background-color: var(--bg-light);
+    }
   }
 }

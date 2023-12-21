@@ -2,7 +2,7 @@ import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 
 export default class OpepenCharacters {
   // Application State
-  words = ['add', 'act', 'believe']
+  words = ['build', 'cube']
   edition = 1
   id = 1
 
@@ -109,11 +109,18 @@ export default class OpepenCharacters {
     // Clear existing content
     this.opepenElement.innerHTML = ''
 
-    this.letters.forEach(letter => {
-      const el = document.createElement('span')
-      el.innerText = letter
+    let dark = true
 
-      this.opepenElement.appendChild(el)
+    this.words.forEach(word => {
+      word.split('').forEach(letter => {
+        const el = document.createElement('span')
+        el.innerText = letter
+        el.className = dark ? 'dark' : 'light'
+
+        this.opepenElement.appendChild(el)
+      })
+
+      dark = !dark
     })
   }
 
