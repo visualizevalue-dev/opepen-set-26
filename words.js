@@ -2068,5 +2068,9 @@ export const BY_LETTER_COUNTS = WORDS.reduce((bag, curr) => {
 
   return bag
 }, {})
+console.log(BY_LETTER_COUNTS)
+
+export const MIN_LETTER_COUNT = 3
+export const MAX_LETTER_COUNT = 8
 
 export default WORDS

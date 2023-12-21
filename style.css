@@ -1,5 +1,32 @@
+:root {
+  --gray-dark: #272727;
+  --text: #EDEDED;
+}
+
+
 #opepen {
+  display: grid;
+  gap: 0.25rem;
+
+  &.edition-4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  &.edition-5 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  &.edition-10 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  &.edition-20 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  &.edition-40 {
+    grid-template-columns: repeat(7, 1fr);
+  }
+
   & > span {
+    background-color: var(--gray-dark);
     padding: 1rem;
+    color: var(--text);
   }
 }

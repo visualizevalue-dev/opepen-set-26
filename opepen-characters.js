@@ -1,8 +1,8 @@
-import WORDS, { LETTER_COUNTS_PER_EDITION } from './words.js'
+import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 
 export default class OpepenCharacters {
   // Application State
-  words = []
+  words = ['add', 'act', 'believe']
   edition = 1
   id = 1
 
@@ -25,6 +25,10 @@ export default class OpepenCharacters {
     this.id = id
 
     this.initialize()
+  }
+
+  get lastWord () {
+    return this.words.at(-1)
   }
 
   get maxLetterCount () {
@@ -50,8 +54,11 @@ export default class OpepenCharacters {
   }
 
   initialize () {
+    this.opepenElement.className = `edition-${this.edition}`
+
     this.formElement.addEventListener('submit', (e) => this.onTextInput(e))
 
+    this.render()
 
     console.log('AVAILABLE SLOTS', this.maxLetterCount)
   }
@@ -64,13 +71,24 @@ export default class OpepenCharacters {
     const word = this.inputElement.value
 
     if (
-      // Word is not part of the BIP 39 wordlist, clear the form
-      ! WORDS.includes(word) ||
-      word.length > this.availableLetterCount
+      (
+        // Word is not part of the BIP 39 wordlist, clear the form
+        ! WORDS.includes(word) ||
+        // If the word is longer than the space we have left
+        word.length > this.availableLetterCount ||
+        // If what we're about to add results in less than 3 available letters, skip
+        (this.availableLetterCount > 3 && (this.availableLetterCount - word.length) < MIN_LETTER_COUNT)
+      ) && (
+        // Allow replacing the last word
+        this.availableLetterCount === 0 && this.lastWord.length !== word.length
+      )
     ) return this.clearInput()
 
     // Add our word to the wordlist
-    this.words.push(word)
+    this.words.unshift(word)
+
+    // If we replace a word, remove the last item
+    if (this.availableLetterCount < 0) this.words.pop()
 
     // Clear our form
     this.clearInput()
