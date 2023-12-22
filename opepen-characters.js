@@ -3,7 +3,8 @@ import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 
 export default class OpepenCharacters {
   // Application State
-  words = ['build', 'cube']
+  // words = ['cube', 'morning']
+  words = []
   edition = 1
   id = 1
 
@@ -27,10 +28,18 @@ export default class OpepenCharacters {
     this.opepenElement = opepenElement
     this.inputElement = inputElement
     this.formElement = formElement
+    this.checkIcon = opepenElement.querySelector('#icon-check')
+    this.uncheckIcon = opepenElement.querySelector('#icon-uncheck')
+
     this.edition = edition
     this.id = id
 
+
     this.initialize()
+  }
+
+  get empty () {
+    return this.words.length === 0
   }
 
   get lastWord () {
@@ -89,7 +98,7 @@ export default class OpepenCharacters {
 
     if (
       // Allow replacing the last word
-      word.length !== this.lastWord.length &&
+      word.length !== this.lastWord?.length &&
       (
         // Word is not part of the BIP 39 wordlist, clear the form
         ! WORDS.includes(word) ||
@@ -135,8 +144,12 @@ export default class OpepenCharacters {
     // Clear existing content
     this.charactersElement.innerHTML = ''
 
+    // Adjust the input color
+    this.formElement.className = this.empty ? 'empty' : ''
+
     let dark = true
 
+    // Fill letters
     this.words.forEach(word => {
       word.split('').forEach(letter => {
         const el = document.createElement('span')
@@ -148,6 +161,13 @@ export default class OpepenCharacters {
 
       dark = !dark
     })
+
+    // Fill empty slots
+    Array(this.availableLetterCount).fill('').forEach(() => {
+      this.charactersElement.appendChild(document.createElement('span'))
+    })
+
+    console.log('available tiles', this.availableLetterCount)
   }
 
 }

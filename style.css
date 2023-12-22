@@ -1,11 +1,17 @@
 :root {
   --base:     #EDEDED;
+  --muted:    #D3D3D3;
   --bg-dark:  #272727;
   --bg-light: #424242;
   --text:     var(--base);
 
+  --success:  #94E337;
+
   --width: min(100vh, 100vw);
   --tile: calc(var(--width) / 8);
+  --font-size: calc(var(--width) / 24);
+  --border-radius:    calc(var(--tile)/16);
+  --border-radius-lg: calc(var(--tile)/4);
 }
 
 body {
@@ -17,15 +23,6 @@ body {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows:    repeat(8, 1fr);
-  /* grid-template-areas:
-    "s s s s s s s s"
-    "s s s s s s l s"
-    "s s o o o o s s"
-    "s s o o o o s s"
-    "s s o o o o s s"
-    "s s o o o o s s"
-    "s s s s s s s s"
-    "s s i i i i s s"; */
 }
 
 #opepen-check {
@@ -41,7 +38,10 @@ body {
 #characters {
   grid-area: 3 / 3 / 7 / 7;
   display: grid;
-  gap: 0.25rem;
+  grid-gap: calc(var(--tile) / 8);
+  border-radius: var(--border-radius-lg);
+  border-top-left-radius: var(--border-radius);
+  overflow: hidden;
 
   &.edition-4 {
     grid-template-columns: repeat(3, 1fr);
@@ -65,9 +65,17 @@ body {
   }
 
   & > span {
-    background-color: var(--bg-dark);
+    background-color: var(--muted);
     color: var(--text);
+    font-size: var(--font-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
 
+    &.dark {
+      background-color: var(--bg-dark);
+    }
     &.light {
       background-color: var(--bg-light);
     }
@@ -75,12 +83,58 @@ body {
 }
 
 #input-form {
+  --padding-x: calc(var(--tile) / 2.25);
+
   display: flex;
+  align-items: center;
+  height: 100%;
   grid-area: 8 / 3 / 8 / 7;
+  position: relative;
 
   & > input {
     display: block;
     flex-grow: 0;
     width: 100%;
+    height: 100%;
+    background: var(--bg-dark);
+    border: 0;
+    color: var(--text);
+    text-transform: uppercase;
+    font-size: var(--font-size);
+
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
+
+    padding: 0 var(--tile) 0 var(--padding-x);
+
+    &:focus,
+    &:active,
+    &:hover {
+      outline: none;
+    }
+  }
+
+  &.empty {
+    & > input:not(:focus) {
+      background: var(--muted);
+    }
+  }
+
+  & > svg {
+    --size: calc(var(--tile) / 2.5);
+    opacity: 0;
+    position: absolute;
+    width: var(--size);
+    height: var(--size);
+    right: var(--padding-x);
+    color: var(--base);
+
+    &.shown {
+      opacity: 1;
+    }
+
+    &.success {
+      color: var(--success);
+    }
   }
 }
