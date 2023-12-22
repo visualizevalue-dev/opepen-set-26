@@ -6,6 +6,7 @@ import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 export default class OpepenCharacters {
   // Application State
   words = []
+  previosWords = []
   edition = 1
   id = 1
   socket = null
@@ -86,8 +87,6 @@ export default class OpepenCharacters {
 
     // Watch for updates from the API
     this.connect()
-
-    console.log('AVAILABLE SLOTS', this.maxLetterCount)
   }
 
   async connect () {
@@ -98,11 +97,12 @@ export default class OpepenCharacters {
       }
     })
 
-    this.socket.on(`opepen:load:${this.id}`,    ({ words }) => this.setWords(words))
+    this.socket.on(`opepen:load:${this.id}`,    ({ words }) => this.setWords(words, true))
     this.socket.on(`opepen:updated:${this.id}`, ({ words }) => this.setWords(words))
   }
 
-  setWords (words) {
+  setWords (words, forceSetPrevious = false) {
+    this.previosWords = forceSetPrevious ? words : [ ...this.words ]
     this.words = words
     this.render()
   }
@@ -149,11 +149,17 @@ export default class OpepenCharacters {
     // Clear input if it's invalid
     if (! this.validateInput(word)) return this.clearInput()
 
-    // Add our word to the wordlist
-    this.words.unshift(word)
+    // Setup our new words
+    const words = [...this.words]
+
+    // Add our new word
+    words.unshift(word)
 
     // If we replace a word, remove the last item
-    if (this.availableLetterCount < 0) this.words.pop()
+    if ((this.availableLetterCount - word.length) < 0) words.pop()
+
+    // Add our word to the wordlist
+    this.setWords(words)
 
     // Notify our server
     this.store()
@@ -163,10 +169,6 @@ export default class OpepenCharacters {
 
     // Render the new word...
     this.render()
-
-    console.log('current words', this.words)
-    console.log('current letter count', this.currentLetterCount)
-    console.log('available slots', this.maxLetterCount - this.currentLetterCount)
   }
 
   async store () {
@@ -217,25 +219,35 @@ export default class OpepenCharacters {
 
     let dark = true
 
+    // Find existing span elements (if they exist) and fill our default tiles
+    let letterElements = this.charactersElement.querySelectorAll('& > span')
+    if (letterElements.length !== this.maxLetterCount) {
+      Array(this.maxLetterCount).fill('').forEach(() => {
+        this.charactersElement.appendChild(document.createElement('span'))
+      })
+    }
+    letterElements = this.charactersElement.querySelectorAll('& > span')
+
     // Fill letters
-    this.words.forEach(word => {
+    let index = 0
+    this.words.forEach((word, wordIndex) => {
       word.split('').forEach(letter => {
-        const el = document.createElement('span')
+        const el = letterElements[index]
+
         el.innerHTML = vvrite(letter)
         el.className = dark ? 'dark' : 'light'
 
-        this.charactersElement.appendChild(el)
+        if (wordIndex === 0 && word !== this.previosWords[0]) {
+          el.classList.add('highlight')
+
+          setTimeout(() => el.classList.remove('highlight'), 1000)
+        }
+
+        index ++
       })
 
       dark = !dark
     })
-
-    // Fill empty slots
-    Array(this.availableLetterCount).fill('').forEach(() => {
-      this.charactersElement.appendChild(document.createElement('span'))
-    })
-
-    console.log('available tiles', this.availableLetterCount)
   }
 
 }

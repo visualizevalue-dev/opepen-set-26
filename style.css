@@ -84,12 +84,16 @@ body {
     align-items: center;
     justify-content: center;
     text-transform: uppercase;
+    transition: background var(--speed);
 
     &.dark {
       background-color: var(--bg-dark);
     }
     &.light {
       background-color: var(--bg-light);
+    }
+    &.highlight {
+      background-color: var(--success);
     }
 
     & > svg {
