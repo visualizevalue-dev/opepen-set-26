@@ -99,8 +99,8 @@ export default class OpepenCharacters {
       }
     })
 
-    this.socket.on('opepen:load', ({ words }) => this.setWords(words))
-    this.socket.on('opepen:updated', ({ words }) => this.setWords(words))
+    this.socket.on(`opepen:load:${this.id}`,    ({ words }) => this.setWords(words))
+    this.socket.on(`opepen:updated:${this.id}`, ({ words }) => this.setWords(words))
   }
 
   setWords (words) {
@@ -150,7 +150,7 @@ export default class OpepenCharacters {
     if (this.availableLetterCount < 0) this.words.pop()
 
     // Notify our server
-    this.socket.emit('opepen:update', { words: this.words })
+    this.socket.emit(`opepen:update:${this.id}`, { words: this.words })
 
     // Clear our form
     this.clearInput()
