@@ -1,3 +1,4 @@
+import { io } from './socket_io.js'
 import { getWidth } from './helpers.js'
 import { vvrite } from './vv0.js'
 import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
@@ -8,6 +9,7 @@ export default class OpepenCharacters {
   words = []
   edition = 1
   id = 1
+  socket = null
 
   // HTML elements
   opepenElement = null
@@ -83,7 +85,27 @@ export default class OpepenCharacters {
     // Initial render...
     this.render()
 
+    // Watch for updates from the API
+    this.connect()
+
     console.log('AVAILABLE SLOTS', this.maxLetterCount)
+  }
+
+  async connect () {
+    this.socket = io('ws://127.0.0.1:3333/sets/026', {
+      query: {
+        edition: this.edition,
+        id: this.id,
+      }
+    })
+
+    this.socket.on('opepen:load', ({ words }) => this.setWords(words))
+    this.socket.on('opepen:updated', ({ words }) => this.setWords(words))
+  }
+
+  setWords (words) {
+    this.words = words
+    this.render()
   }
 
   onResize () {
@@ -126,6 +148,9 @@ export default class OpepenCharacters {
 
     // If we replace a word, remove the last item
     if (this.availableLetterCount < 0) this.words.pop()
+
+    // Notify our server
+    this.socket.emit('opepen:update', { words: this.words })
 
     // Clear our form
     this.clearInput()
