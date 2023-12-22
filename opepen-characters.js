@@ -1,3 +1,4 @@
+import { getWidth } from './helpers.js'
 import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 
 export default class OpepenCharacters {
@@ -11,16 +12,21 @@ export default class OpepenCharacters {
   formElement   = null
   inputElement  = null
 
+  // Other options
+  width = getWidth()
+
   constructor ({
+    charactersElement,
     opepenElement,
-    formElement,
     inputElement,
+    formElement,
     edition,
     id,
   }) {
+    this.charactersElement = charactersElement
     this.opepenElement = opepenElement
-    this.formElement = formElement
     this.inputElement = inputElement
+    this.formElement = formElement
     this.edition = edition
     this.id = id
 
@@ -54,13 +60,23 @@ export default class OpepenCharacters {
   }
 
   initialize () {
-    this.opepenElement.className = `edition-${this.edition}`
+    this.charactersElement.className = `edition-${this.edition}`
 
+    // Event listeners
+    window.addEventListener('resize', () => this.onResize())
     this.formElement.addEventListener('submit', (e) => this.onTextInput(e))
 
+    // Initial render...
     this.render()
 
     console.log('AVAILABLE SLOTS', this.maxLetterCount)
+  }
+
+  onResize () {
+    this.width = getWidth()
+    this.opepenElement.style.setProperty("--width", this.width + 'px')
+
+    this.render()
   }
 
   onTextInput (e) {
@@ -69,19 +85,25 @@ export default class OpepenCharacters {
 
     // Get the word from our input element
     const word = this.inputElement.value
+    const availableLetterCountAfter = this.availableLetterCount - word.length
 
     if (
+      // Allow replacing the last word
+      word.length !== this.lastWord.length &&
       (
         // Word is not part of the BIP 39 wordlist, clear the form
         ! WORDS.includes(word) ||
         // If the word is longer than the space we have left
         word.length > this.availableLetterCount ||
-        // If what we're about to add results in less than 3 available letters, skip
-        (this.availableLetterCount > 3 && (this.availableLetterCount - word.length) < MIN_LETTER_COUNT)
-      ) && (
-        // Allow replacing the last word
-        this.availableLetterCount === 0 && this.lastWord.length !== word.length
+        // If what we're about to add results in
+        // less than 3 available letters, skip
+        (
+          this.availableLetterCount !== 0 &&
+          availableLetterCountAfter > 0 &&
+          availableLetterCountAfter < MIN_LETTER_COUNT
+        )
       )
+
     ) return this.clearInput()
 
     // Add our word to the wordlist
@@ -106,8 +128,12 @@ export default class OpepenCharacters {
   }
 
   render () {
+    // Set dimensions
+    this.opepenElement.style.width = this.width + 'px'
+    this.opepenElement.style.height = this.width + 'px'
+
     // Clear existing content
-    this.opepenElement.innerHTML = ''
+    this.charactersElement.innerHTML = ''
 
     let dark = true
 
@@ -117,7 +143,7 @@ export default class OpepenCharacters {
         el.innerText = letter
         el.className = dark ? 'dark' : 'light'
 
-        this.opepenElement.appendChild(el)
+        this.charactersElement.appendChild(el)
       })
 
       dark = !dark
