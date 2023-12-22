@@ -73,7 +73,10 @@ export default class OpepenCharacters {
 
     // Event listeners
     window.addEventListener('resize', () => this.onResize())
-    this.formElement.addEventListener('submit', (e) => this.onTextInput(e))
+    this.formElement.addEventListener('submit', (e) => this.onWordSubmit(e))
+    this.inputElement.addEventListener('input', (e) => this.onInput(e))
+    this.checkIcon.addEventListener('click', () => this.onWordSubmit())
+    this.uncheckIcon.addEventListener('click', () => this.clearInput())
 
     // Initial render...
     this.render()
@@ -88,32 +91,31 @@ export default class OpepenCharacters {
     this.render()
   }
 
-  onTextInput (e) {
+  onInput () {
+    const input = this.inputElement.value
+    const valid = this.validateInput(input)
+
+    if (valid) {
+      this.checkIcon.className.baseVal = 'shown success'
+      this.uncheckIcon.className.baseVal = ''
+    } else if (input) {
+      this.checkIcon.className.baseVal = ''
+      this.uncheckIcon.className.baseVal = 'shown'
+    } else {
+      this.checkIcon.className.baseVal = ''
+      this.uncheckIcon.className.baseVal = ''
+    }
+  }
+
+  onWordSubmit (e) {
     // Don't submit the page via a POST request...
-    e.preventDefault()
+    e?.preventDefault()
 
     // Get the word from our input element
     const word = this.inputElement.value
-    const availableLetterCountAfter = this.availableLetterCount - word.length
 
-    if (
-      // Allow replacing the last word
-      word.length !== this.lastWord?.length &&
-      (
-        // Word is not part of the BIP 39 wordlist, clear the form
-        ! WORDS.includes(word) ||
-        // If the word is longer than the space we have left
-        word.length > this.availableLetterCount ||
-        // If what we're about to add results in
-        // less than 3 available letters, skip
-        (
-          this.availableLetterCount !== 0 &&
-          availableLetterCountAfter > 0 &&
-          availableLetterCountAfter < MIN_LETTER_COUNT
-        )
-      )
-
-    ) return this.clearInput()
+    // Clear input if it's invalid
+    if (! this.validateInput(word)) return this.clearInput()
 
     // Add our word to the wordlist
     this.words.unshift(word)
@@ -132,8 +134,35 @@ export default class OpepenCharacters {
     console.log('available slots', this.maxLetterCount - this.currentLetterCount)
   }
 
+  validateInput (word) {
+    const availableLetterCountAfter = this.availableLetterCount - word.length
+
+    // Word is not part of the BIP 39 wordlist, it's not valid
+    if (! WORDS.includes(word)) return false
+
+    // FIXME: Clean up...
+    if (
+      // Allow replacing the last word
+      word.length !== this.lastWord?.length &&
+      (
+        // If the word is longer than the space we have left
+        word.length > this.availableLetterCount ||
+        // If what we're about to add results in
+        // less than 3 available letters, skip
+        (
+          this.availableLetterCount !== 0 &&
+          availableLetterCountAfter > 0 &&
+          availableLetterCountAfter < MIN_LETTER_COUNT
+        )
+      )
+    ) return false
+
+    return true
+  }
+
   clearInput () {
     this.inputElement.value = ''
+    this.onInput()
   }
 
   render () {
