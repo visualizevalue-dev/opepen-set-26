@@ -5,7 +5,6 @@ import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 
 export default class OpepenCharacters {
   // Application State
-  // words = ['cube', 'morning']
   words = []
   edition = 1
   id = 1
@@ -140,6 +139,13 @@ export default class OpepenCharacters {
     // Get the word from our input element
     const word = this.inputElement.value
 
+    if (word === 'clear') {
+      this.words = []
+      this.store()
+      this.clearInput()
+      return this.render()
+    }
+
     // Clear input if it's invalid
     if (! this.validateInput(word)) return this.clearInput()
 
@@ -150,7 +156,7 @@ export default class OpepenCharacters {
     if (this.availableLetterCount < 0) this.words.pop()
 
     // Notify our server
-    this.socket.emit(`opepen:update:${this.id}`, { words: this.words })
+    this.store()
 
     // Clear our form
     this.clearInput()
@@ -161,6 +167,10 @@ export default class OpepenCharacters {
     console.log('current words', this.words)
     console.log('current letter count', this.currentLetterCount)
     console.log('available slots', this.maxLetterCount - this.currentLetterCount)
+  }
+
+  async store () {
+    return await this.socket.emit(`opepen:update:${this.id}`, { words: this.words })
   }
 
   validateInput (word) {
