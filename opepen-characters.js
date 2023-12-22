@@ -1,4 +1,5 @@
 import { getWidth } from './helpers.js'
+import { vvrite } from './vv0.js'
 import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 
 export default class OpepenCharacters {
@@ -30,6 +31,7 @@ export default class OpepenCharacters {
     this.formElement = formElement
     this.checkIcon = opepenElement.querySelector('#icon-check')
     this.uncheckIcon = opepenElement.querySelector('#icon-uncheck')
+    this.vvriter = opepenElement.querySelector('#vvriter')
 
     this.edition = edition
     this.id = id
@@ -105,6 +107,8 @@ export default class OpepenCharacters {
       this.checkIcon.className.baseVal = ''
       this.uncheckIcon.className.baseVal = ''
     }
+
+    this.vvriter.innerHTML = vvrite(input)
   }
 
   onWordSubmit (e) {
@@ -182,7 +186,7 @@ export default class OpepenCharacters {
     this.words.forEach(word => {
       word.split('').forEach(letter => {
         const el = document.createElement('span')
-        el.innerText = letter
+        el.innerHTML = vvrite(letter)
         el.className = dark ? 'dark' : 'light'
 
         this.charactersElement.appendChild(el)
