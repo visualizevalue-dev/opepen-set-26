@@ -1,4 +1,4 @@
-import { io } from './socket_io.js'
+import { io } from './socket.io.esm.min.js'
 import { getWidth } from './helpers.js'
 import { vvrite } from './vv0.js'
 import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
@@ -96,6 +96,7 @@ export default class OpepenCharacters {
         id: this.id,
       },
       transports: ['websocket'],
+      withCredentials: true,
       secure: true,
     })
 
