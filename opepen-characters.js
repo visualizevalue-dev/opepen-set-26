@@ -90,7 +90,7 @@ export default class OpepenCharacters {
   }
 
   async connect () {
-    this.socket = io('ws://api.opepen.art/sets/026', {
+    this.socket = io('wss://api.opepen.art/sets/026', {
       query: {
         edition: this.edition,
         id: this.id,
