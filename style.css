@@ -40,7 +40,7 @@ body {
 #characters {
   grid-area: 3 / 3 / 7 / 7;
   display: grid;
-  grid-gap: calc(var(--tile) / 8);
+  grid-gap: calc(var(--tile) / 16);
   border-radius: var(--border-radius-lg);
   border-top-left-radius: var(--border-radius);
   overflow: hidden;
