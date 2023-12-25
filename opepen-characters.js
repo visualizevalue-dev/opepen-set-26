@@ -90,7 +90,8 @@ export default class OpepenCharacters {
   }
 
   async connect () {
-    this.socket = io('wss://api.opepen.art/sets/026', {
+    // this.socket = io('wss://api.opepen.art/sets/026', {
+    this.socket = io('ws://127.0.0.1:3333/sets/026', {
       query: {
         edition: this.edition,
         id: this.id,
@@ -143,29 +144,29 @@ export default class OpepenCharacters {
     const word = this.inputElement.value
 
     if (word === 'clear') {
-      this.words = []
-      this.store()
+      this.clearWords()
       this.clearInput()
       return this.render()
     }
 
-    // Clear input if it's invalid
-    if (! this.validateInput(word)) return this.clearInput()
+    // FIXME: Implement clientonly mode & revalidate inputs
+    // // Clear input if it's invalid
+    // if (! this.validateInput(word)) return this.clearInput()
 
-    // Setup our new words
-    const words = [...this.words]
+    // // Setup our new words
+    // const words = [...this.words]
 
-    // Add our new word
-    words.unshift(word)
+    // // Add our new word
+    // words.unshift(word)
 
-    // If we replace a word, remove the last item
-    if ((this.availableLetterCount - word.length) < 0) words.pop()
+    // // If we replace a word, remove the last item
+    // if ((this.availableLetterCount - word.length) < 0) words.pop()
 
-    // Add our word to the wordlist
-    this.setWords(words)
+    // // Add our word to the wordlist
+    // this.setWords(words)
 
     // Notify our server
-    this.store()
+    this.store(word)
 
     // Clear our form
     this.clearInput()
@@ -174,8 +175,13 @@ export default class OpepenCharacters {
     this.render()
   }
 
-  async store () {
-    return await this.socket.emit(`opepen:update:${this.id}`, { words: this.words })
+  async store (word) {
+    return await this.socket.emit(`opepen:word:${this.id}`, word)
+  }
+
+  async clearWords () {
+    this.words = []
+    return await this.socket.emit(`opepen:clear:${this.id}`)
   }
 
   validateInput (word) {
@@ -236,6 +242,8 @@ export default class OpepenCharacters {
     this.words.forEach((word, wordIndex) => {
       word.split('').forEach(letter => {
         const el = letterElements[index]
+
+        if (! el) return
 
         el.innerHTML = vvrite(letter)
         el.className = dark ? 'dark' : 'light'
