@@ -1,10 +1,15 @@
 import { io } from './socket.io.esm.min.js'
-import { getWidth } from './helpers.js'
+import { formatNumber, getWidth } from './helpers.js'
 import { vvrite } from './vv0.js'
 import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 
 export default class OpepenCharacters {
   // Application State
+  stats = {
+    total: 0,
+    valid: 0,
+    seeds: 0,
+  }
   words = []
   previosWords = []
   edition = 1
@@ -15,6 +20,7 @@ export default class OpepenCharacters {
   opepenElement = null
   formElement   = null
   inputElement  = null
+  statsElement  = null
 
   // Other options
   width = getWidth()
@@ -31,8 +37,9 @@ export default class OpepenCharacters {
     this.opepenElement = opepenElement
     this.inputElement = inputElement
     this.formElement = formElement
-    this.checkIcon = opepenElement.querySelector('#icon-check')
     this.uncheckIcon = opepenElement.querySelector('#icon-uncheck')
+    this.checkIcon = opepenElement.querySelector('#icon-check')
+    this.statsElement = opepenElement.querySelector('#stats')
     this.vvriter = opepenElement.querySelector('#vvriter')
 
     this.edition = edition
@@ -90,8 +97,7 @@ export default class OpepenCharacters {
   }
 
   async connect () {
-    // this.socket = io('wss://api.opepen.art/sets/026', {
-    this.socket = io('ws://127.0.0.1:3333/sets/026', {
+    this.socket = io('wss://api.opepen.art/sets/026', {
       query: {
         edition: this.edition,
         id: this.id,
@@ -101,8 +107,14 @@ export default class OpepenCharacters {
       secure: true,
     })
 
-    this.socket.on(`opepen:load:${this.id}`,    ({ words }) => this.setWords(words, true))
-    this.socket.on(`opepen:updated:${this.id}`, ({ words }) => this.setWords(words))
+    this.socket.on(`opepen:load:${this.id}`,    (data) => this.setData(data, true))
+    this.socket.on(`opepen:updated:${this.id}`, (data) => this.setData(data))
+  }
+
+  setData (data, forceSetPrevious = false) {
+    if (data.counts) this.stats = data.counts
+
+    this.setWords(data.words, forceSetPrevious)
   }
 
   setWords (words, forceSetPrevious = false) {
@@ -222,6 +234,13 @@ export default class OpepenCharacters {
 
     // Clear existing content
     this.charactersElement.innerHTML = ''
+
+    // Set the stats
+    this.statsElement.innerHTML = vvrite([
+      `${formatNumber(this.stats.total)} words entered`,
+      `${formatNumber(this.stats.valid)} valid words entered`,
+      `${formatNumber(this.stats.seeds)} valid seed phrases`,
+    ].join(' - '))
 
     // Adjust the input color
     this.formElement.className = this.empty ? 'empty' : ''

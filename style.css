@@ -21,6 +21,7 @@ body {
 }
 
 #opepen {
+  position: relative;
   background: var(--base);
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -35,6 +36,23 @@ body {
   width: var(--size);
   height: var(--size);
   top: var(--size);
+}
+
+#stats {
+  position: absolute;
+  top: 0;
+  height: calc(var(--tile) / 4);
+  width: 100%;
+  background: var(--muted);
+  color: #5F5F5F;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > svg {
+    height: 40%;
+  }
 }
 
 #characters {
