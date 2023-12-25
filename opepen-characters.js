@@ -162,8 +162,14 @@ export default class OpepenCharacters {
     }
 
     // FIXME: Implement clientonly mode & revalidate inputs
-    // // Clear input if it's invalid
-    // if (! this.validateInput(word)) return this.clearInput()
+    // Clear input if it's invalid
+    const valid = this.validateInput(word)
+    if (! valid) {
+      this.formElement.classList.add('invalid')
+      setTimeout(() => this.formElement.classList.remove('invalid'), 1000)
+    } else {
+      this.formElement.classList.remove('invalid')
+    }
 
     // // Setup our new words
     // const words = [...this.words]
@@ -180,11 +186,14 @@ export default class OpepenCharacters {
     // Notify our server
     this.store(word)
 
-    // Clear our form
-    this.clearInput()
+    // Clear our form & rerender
+    const clearAfter = valid ? 0 : 1000
+    setTimeout(() => {
+      this.clearInput()
 
-    // Render the new word...
-    this.render()
+      // Render the new word...
+      this.render()
+    }, clearAfter)
   }
 
   async store (word) {
@@ -243,7 +252,11 @@ export default class OpepenCharacters {
     ].join(' - '))
 
     // Adjust the input color
-    this.formElement.className = this.empty ? 'empty' : ''
+    if (this.empty) {
+      this.formElement.classList.add('empty')
+    } else {
+      this.formElement.classList.remove('empty')
+    }
 
     let dark = true
 

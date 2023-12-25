@@ -189,6 +189,15 @@ body {
     }
   }
 
+  &.invalid {
+    color: red;
+
+    & > svg,
+    & > #vvriter > svg {
+      color: red;
+    }
+  }
+
   & > svg {
     --size: calc(var(--tile) / 2.5);
 
