@@ -11,7 +11,7 @@
 
   --width: min(100vh, 100vw);
   --tile: calc(var(--width) / 8);
-  --font-size: calc(var(--width) / 24);
+  --font-size: calc(var(--width) / 32);
   --border-radius:    calc(var(--tile)/16);
   --border-radius-lg: calc(var(--tile)/4);
 }
@@ -70,6 +70,8 @@ body {
   overflow: hidden;
 
   &.edition-1 {
+    --font-size: calc(var(--width) / 16);
+
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
     font-size: calc(var(--font-size) * 1.618);
