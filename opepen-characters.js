@@ -126,7 +126,7 @@ export default class OpepenCharacters {
   }
 
   onInput () {
-    const input = this.inputElement.value
+    const input = this.inputElement.value?.toLowerCase()
     const valid = this.validateInput(input)
 
     if (valid) {
