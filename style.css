@@ -172,6 +172,7 @@ body {
       outline: none;
     }
 
+    caret-color: transparent;
     &::-webkit-input-placeholder { color: transparent; }
     &::-moz-placeholder          { color: transparent; }
     &:-ms-input-placeholder      { color: transparent; }
