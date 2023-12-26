@@ -73,14 +73,6 @@ export default class OpepenCharacters {
     return arr
   }
 
-  get currentLetterCount () {
-    return this.letters.length
-  }
-
-  get availableLetterCount () {
-    return this.maxLetterCount - this.currentLetterCount
-  }
-
   initialize () {
     this.charactersElement.className = `edition-${this.edition}`
 
@@ -163,7 +155,7 @@ export default class OpepenCharacters {
       return this.render()
     }
 
-    // FIXME: Implement clientonly mode & revalidate inputs
+    // FIXME: Implement clientonly mode
     // Clear input if it's invalid
     const valid = this.validateInput(word)
     if (! valid) {
@@ -172,18 +164,6 @@ export default class OpepenCharacters {
     } else {
       this.formElement.classList.remove('invalid')
     }
-
-    // // Setup our new words
-    // const words = [...this.words]
-
-    // // Add our new word
-    // words.unshift(word)
-
-    // // If we replace a word, remove the last item
-    // if ((this.availableLetterCount - word.length) < 0) words.pop()
-
-    // // Add our word to the wordlist
-    // this.setWords(words)
 
     // Notify our server
     this.store(word)
@@ -208,27 +188,10 @@ export default class OpepenCharacters {
   }
 
   validateInput (word) {
-    const availableLetterCountAfter = this.availableLetterCount - word.length
-
     // Word is not part of the BIP 39 wordlist, it's not valid
     if (! WORDS.includes(word)) return false
 
-    // FIXME: Clean up...
-    if (
-      // Allow replacing the last word
-      word.length !== this.lastWord?.length &&
-      (
-        // If the word is longer than the space we have left
-        word.length > this.availableLetterCount ||
-        // If what we're about to add results in
-        // less than 3 available letters, skip
-        (
-          this.availableLetterCount !== 0 &&
-          availableLetterCountAfter > 0 &&
-          availableLetterCountAfter < MIN_LETTER_COUNT
-        )
-      )
-    ) return false
+    if (word.length > this.maxLetterCount) return false
 
     return true
   }
@@ -277,6 +240,9 @@ export default class OpepenCharacters {
     // Fill letters
     let index = 0
     this.words.forEach((word, wordIndex) => {
+
+      if (word.length > this.maxLetterCount) return
+
       word.split('').forEach(letter => {
         const el = letterElements[index]
 
