@@ -1,6 +1,7 @@
 import { io } from './socket.io.esm.min.js'
 import { formatNumber, getWidth } from './helpers.js'
 import { vvrite } from './vv0.js'
+import renderOpepenCheck from './opepen.svg.js'
 import WORDS, { LETTER_COUNTS_PER_EDITION, MIN_LETTER_COUNT } from './words.js'
 
 export default class OpepenCharacters {
@@ -37,6 +38,7 @@ export default class OpepenCharacters {
     this.opepenElement = opepenElement
     this.inputElement = inputElement
     this.formElement = formElement
+    this.opepenCheck = opepenElement.querySelector('#opepen-check')
     this.uncheckIcon = opepenElement.querySelector('#icon-uncheck')
     this.checkIcon = opepenElement.querySelector('#icon-check')
     this.statsElement = opepenElement.querySelector('#stats')
@@ -241,15 +243,18 @@ export default class OpepenCharacters {
     this.opepenElement.style.width = this.width + 'px'
     this.opepenElement.style.height = this.width + 'px'
 
-    // Clear existing content
-    this.charactersElement.innerHTML = ''
-
     // Set the stats
     this.statsElement.innerHTML = vvrite([
       `${formatNumber(this.stats.total)} words entered`,
       `${formatNumber(this.stats.valid)} valid words entered`,
       `${formatNumber(this.stats.seeds)} valid seed phrases`,
     ].join(' - '))
+
+    // Set opepen check
+    this.opepenCheck.innerHTML = renderOpepenCheck('var(--white)')
+
+    // Clear existing content
+    this.charactersElement.innerHTML = ''
 
     // Adjust the input color
     if (this.empty) {

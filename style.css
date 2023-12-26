@@ -1,9 +1,9 @@
 :root {
-  --base:     #EDEDED;
+  --base:     #000000;
   --muted:    #D3D3D3;
   --bg-dark:  #272727;
   --bg-light: #424242;
-  --text:     var(--base);
+  --text:     #FFFFFF;
 
   --success:  #94E337;
 
@@ -36,6 +36,12 @@ body {
   width: var(--size);
   height: var(--size);
   top: var(--size);
+  color: white;
+
+  & > svg {
+    width: var(--size);
+    height: var(--size);
+  }
 }
 
 #stats {
@@ -43,7 +49,7 @@ body {
   top: 0;
   height: calc(var(--tile) / 4);
   width: 100%;
-  background: var(--muted);
+  background: var(--bg-dark);
   color: #5F5F5F;
   text-align: center;
   display: flex;
@@ -58,7 +64,7 @@ body {
 #characters {
   grid-area: 3 / 3 / 7 / 7;
   display: grid;
-  grid-gap: calc(var(--tile) / 16);
+  grid-gap: 0;
   border-radius: var(--border-radius-lg);
   border-top-left-radius: var(--border-radius);
   overflow: hidden;
@@ -95,7 +101,7 @@ body {
   }
 
   & > span {
-    background-color: var(--muted);
+    background-color: var(--bg-dark);
     color: var(--text);
     font-size: inherit;
     display: flex;
@@ -131,7 +137,7 @@ body {
 
   & > #vvriter {
     position: absolute;
-    color: var(--base);
+    color: var(--text);
     display: flex;
     align-items: center;
     max-width: calc(100% - var(--tile) - var(--padding-x));
@@ -177,7 +183,7 @@ body {
       position: absolute;
       width: calc(var(--font-size) / 8);
       height: var(--font-size);
-      background: var(--base);
+      background: var(--text);
       left: var(--padding-x);
       animation: blink var(--speed) alternate infinite;
     }
@@ -185,7 +191,7 @@ body {
 
   &.empty {
     & > input:not(:focus) {
-      background: var(--muted);
+      background: var(--bg-dark);
     }
   }
 
@@ -195,6 +201,10 @@ body {
     & > svg,
     & > #vvriter > svg {
       color: red;
+
+      &#icon-uncheck {
+        opacity: 1;
+      }
     }
   }
 
@@ -206,7 +216,7 @@ body {
     width: var(--size);
     height: var(--size);
     right: var(--padding-x);
-    color: var(--base);
+    color: var(--text);
     transition: all var(--speed);
     pointer-events: none;
 
