@@ -37,11 +37,6 @@ body {
   height: var(--size);
   top: var(--size);
   color: white;
-
-  & > svg {
-    width: var(--size);
-    height: var(--size);
-  }
 }
 
 #stats {

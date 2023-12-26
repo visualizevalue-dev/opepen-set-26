@@ -1,9 +1,5 @@
 <svg width="512" height="512" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
-  <g
-    fill="#D3D3D3"
-    stroke-width="0.04"
-    transform="translate(0, -0.02)"
-  >
+  <g fill="#FFFFFF" >
     <!-- Left Eye -->
     <g transform="translate(2, 2)" id="left-eye">
       <path d="M 1 0
