@@ -209,7 +209,6 @@ export default class OpepenCharacters {
 
     // Set the stats
     this.statsElement.innerHTML = vvrite([
-      `${formatNumber(this.stats.clients)} users connected`,
       `${formatNumber(this.stats.total)} words entered`,
       `${formatNumber(this.stats.valid)} valid words entered`,
       `${formatNumber(this.stats.seeds)} valid seed phrases`,
