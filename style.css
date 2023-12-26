@@ -148,6 +148,12 @@ body {
     }
   }
 
+  & > button {
+    position: absolute;
+    left: -500vw;
+    opacity: 0.0001;
+  }
+
   & > input {
     position: relative;
     display: block;
