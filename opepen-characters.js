@@ -148,7 +148,7 @@ export default class OpepenCharacters {
     e?.preventDefault()
 
     // Get the word from our input element
-    const word = this.inputElement.value
+    const word = this.inputElement.value?.toLowerCase()
 
     if (word === 'clear') {
       this.clearWords()
