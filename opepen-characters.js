@@ -109,6 +109,8 @@ export default class OpepenCharacters {
     if (data.counts) this.stats = data.counts
 
     this.setWords(data.words, forceSetPrevious)
+
+    RENDERED = true
   }
 
   setWords (words, forceSetPrevious = false) {
