@@ -9,6 +9,7 @@ export default class OpepenCharacters {
     total: 0,
     valid: 0,
     seeds: 0,
+    clients: 0,
   }
   words = []
   previosWords = []
@@ -208,6 +209,7 @@ export default class OpepenCharacters {
 
     // Set the stats
     this.statsElement.innerHTML = vvrite([
+      `${formatNumber(this.stats.clients)} users connected`,
       `${formatNumber(this.stats.total)} words entered`,
       `${formatNumber(this.stats.valid)} valid words entered`,
       `${formatNumber(this.stats.seeds)} valid seed phrases`,

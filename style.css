@@ -53,6 +53,7 @@ body {
 
   & > svg {
     height: 40%;
+    max-width: calc(100% - 4rem);
   }
 }
 
