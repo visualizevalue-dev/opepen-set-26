@@ -285,7 +285,7 @@ export default class OpepenCharacters {
         el.innerHTML = vvrite(letter)
         el.className = dark ? 'dark' : 'light'
 
-        if (wordIndex === 0 && word !== this.previosWords[0]) {
+        if (wordIndex === 0 && JSON.stringify(this.words) !== JSON.stringify(this.previosWords)) {
           el.classList.add('highlight')
 
           setTimeout(() => el.classList.remove('highlight'), 1000)
